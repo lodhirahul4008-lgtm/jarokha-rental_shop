@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, MessageSquare, ShieldCheck, Sparkles, Star, CheckCircle, Store, Heart, User, Clock, HelpCircle, CalendarRange, ChevronRight } from "lucide-react";
 import { PRODUCTS, Product } from "../data/products";
@@ -18,6 +18,90 @@ export default function Home({ products, onQuickView, onToggleWishlist, wishlist
   const featuredScrollRef = useRef<HTMLDivElement>(null);
 
   const featuredProducts = products.filter((item) => item.featured).slice(0, 6);
+
+  const heroOutfits = [
+    {
+      id: "prod-1",
+      name: "Crimson Royal Bridal Lehenga",
+      price: "₹4,999",
+      category: "Bridal Lehengas",
+      image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&q=80&w=800",
+      colorTag: "#800020",
+      accent: "Deep Crimson Velvet with Intricate Antique Gold Zari & Hand Cut Stones"
+    },
+    {
+      id: "prod-9",
+      name: "Maharani Velvet Bridal Lehenga",
+      price: "₹3,499",
+      category: "Bridal Lehengas",
+      image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&q=80&w=800",
+      colorTag: "#6c0217",
+      accent: "Royal Maroon Velvet with Gota Patti and Heritage Zardosi Work"
+    },
+    {
+      id: "prod-6",
+      name: "Majestic Wine Real Mirror Lehenga",
+      price: "₹3,499",
+      category: "Reception & Wedding",
+      image: "https://images.unsplash.com/photo-1621184455862-c163dfb30e0f?auto=format&fit=crop&q=80&w=800",
+      colorTag: "#4A0019",
+      accent: "Geometric Real Mirror Embellishments on Premium Plum Raw Silk"
+    },
+    {
+      id: "prod-5",
+      name: "Vintage Banarasi Katan Silk Saree",
+      price: "₹1,299",
+      category: "Silk & Banarasi Sarees",
+      image: "https://images.unsplash.com/photo-1610030470282-3e284da7ded7?auto=format&fit=crop&q=80&w=800",
+      colorTag: "#141B34",
+      accent: "Midnight Royal Blue with intricate pure gold zari brocade weaving"
+    },
+    {
+      id: "prod-15",
+      name: "Classic Crimson Kanjeevaram Saree",
+      price: "₹1,499",
+      category: "Silk & Banarasi Sarees",
+      image: "https://images.unsplash.com/photo-1610030470217-1a48c41f71df?auto=format&fit=crop&q=80&w=800",
+      colorTag: "#931621",
+      accent: "Ruby red pure Kanchipuram silk thread with temple borders"
+    },
+    {
+      id: "prod-2",
+      name: "Blushing Rose Sequined Lehenga",
+      price: "₹1,999",
+      category: "Partywear Outfits & Dresses",
+      image: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&q=80&w=800",
+      colorTag: "#E2AAAF",
+      accent: "Lightweight Georgette beautifully hand-placed with baby sequins"
+    },
+    {
+      id: "prod-4",
+      name: "Emerald Forest Fusion Gown",
+      price: "₹1,599",
+      category: "Mehendi & Festive Gowns",
+      image: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&q=80&w=800",
+      colorTag: "#0B6623",
+      accent: "Fluid green micro-chiffon styled with custom cutdana work belts"
+    },
+    {
+      id: "prod-12",
+      name: "Chanderi Rani Pink Anarkali Suit",
+      price: "₹799",
+      category: "Partywear Outfits & Dresses",
+      image: "https://images.unsplash.com/photo-1618244972963-dbee1a7edc95?auto=format&fit=crop&q=80&w=800",
+      colorTag: "#C71585",
+      accent: "Pure Cotton-Silk blend with classic gold borders and neck zari"
+    }
+  ];
+
+  const [activeHeroIdx, setActiveHeroIdx] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveHeroIdx((prev) => (prev + 1) % heroOutfits.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
 
   const categories = [
     { name: "Bridal Lehengas", count: "Starts ₹1999", img: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&q=80&w=400", path: "/collection?category=Bridal%20Lehengas" },
@@ -49,63 +133,79 @@ export default function Home({ products, onQuickView, onToggleWishlist, wishlist
   return (
     <div className="bg-[#FAF7F2]">
       
-      {/* 1. Hero Area */}
-      <section className="relative overflow-hidden pt-12 md:pt-16 pb-16 md:pb-24 border-b border-[#D4AF37]/15 bg-gradient-to-b from-[#FAF7F2] via-[#F6ECE2]/40 to-[#FAF7F2]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center text-left">
+      {/* 1. New Elegant & Interactive Jharokha Hero Area */}
+      <section id="hero-section" className="relative overflow-hidden pt-12 md:pt-20 pb-16 md:pb-24 border-b border-[#D4AF37]/15 bg-gradient-to-b from-[#FAF7F2] via-[#FDFBF7] to-[#FAF7F2]">
+        
+        {/* Soft Royal Amber Glow */}
+        <div className="absolute right-0 top-10 w-[500px] h-[500px] bg-gold/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute left-10 bottom-0 w-[300px] h-[300px] bg-maroon/5 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center text-left">
           
-          {/* Hero Left Info */}
-          <div className="lg:col-span-7 space-y-6 md:space-y-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-maroon/5 border border-maroon/25 text-maroon text-xs rounded-full font-semibold">
-              <Sparkles className="w-3.5 h-3.5 text-gold animate-spin-slow" />
-              <span>Premium Indian Runway Fashion starting at just ₹499!</span>
+          {/* Hero Left Content Panel */}
+          <div className="lg:col-span-7 space-y-6 md:space-y-8 relative z-10">
+            <div id="hero-tagline-badge" className="inline-flex items-center gap-2 px-3 py-1 bg-maroon/5 border border-maroon/25 text-maroon text-[11px] rounded-full font-bold uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5 text-gold animate-bounce" />
+              <span>Bhopal's Premier Luxury Rental Destination</span>
             </div>
             
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-extrabold text-neutral-800 font-display tracking-tight leading-tight">
-              Rent Beautiful Bridal & <br />
-              <span className="text-maroon relative inline-block">
-                Partywear Outfits
-                <span className="absolute bottom-1.5 left-0 w-full h-1 bg-gold/50" />
-              </span> <br />
-              <span className="font-serif italic font-normal text-gold-dark text-2xl sm:text-3xl md:text-4xl block mt-1">
-                Without Buying Expensive Dresses
+            <h1 id="hero-title" className="text-3.5xl sm:text-4.5xl md:text-5xl lg:text-5.5xl font-extrabold text-neutral-800 font-display tracking-tight leading-[1.12]">
+              Drape Yourself in <br />
+              <span className="text-maroon relative inline-block font-display">
+                Royalty,
+                <span className="absolute bottom-1.5 left-0 w-full h-[3px] bg-gradient-to-r from-[#D4AF37] to-transparent" />
+              </span>{" "}
+              On Budget.
+              <span className="font-serif italic font-normal text-[#D4AF37] text-2xl sm:text-3xl md:text-[34px] block mt-2.5">
+                Luxury Indian designer outfits starting ₹799
               </span>
             </h1>
 
-            <p className="text-neutral-600 text-sm md:text-base leading-relaxed max-w-xl">
-              Check real-time slot availability, pick your custom or standard size, book your outfits, and glow on your special wedding or festival day. Why buy a dress you'll wear only once? Set a timeless fashion statement on budget!
+            <p id="hero-description" className="text-neutral-600 text-sm md:text-base leading-relaxed max-w-xl font-medium">
+              Why spend fortunes on custom traditional outfits you wear only once? Jharokha curates authentic heavy bridal lehengas, reception gowns, and premium heritage banarasi silk sarees with customized tailoring fittings for your special events.
             </p>
 
-            {/* Banner badging icons */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-1 text-xs text-neutral-700 font-medium">
-              <div className="flex items-center gap-1.5">
-                <ShieldCheck className="w-4.5 h-4.5 text-[#D4AF37]" />
-                <span>Affordable Prices</span>
+            {/* Simpler and more attractive horizontal key benefits */}
+            <div id="hero-benefit-list" className="grid grid-cols-2 md:grid-cols-4 gap-4 py-2 border-t border-b border-neutral-100">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                  <CheckCircle className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-[11px] font-bold text-neutral-700 tracking-wide">Steam Sterilized</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <ShieldCheck className="w-4.5 h-4.5 text-[#D4AF37]" />
-                <span>Latest Collection</span>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                  <CheckCircle className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-[11px] font-bold text-neutral-700 tracking-wide">Custom Tailoring</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <ShieldCheck className="w-4.5 h-4.5 text-[#D4AF37]" />
-                <span>Clean & Hygienic</span>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                  <CheckCircle className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-[11px] font-bold text-neutral-700 tracking-wide">Rent till 5-Days</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <ShieldCheck className="w-4.5 h-4.5 text-[#D4AF37]" />
-                <span>Easy Booking</span>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                  <CheckCircle className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-[11px] font-bold text-neutral-700 tracking-wide">Bhopal Boutique</span>
               </div>
             </div>
 
-            {/* CTA panel buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            {/* Call to action panel buttons styled like premium designer boutique */}
+            <div id="hero-actions" className="flex flex-col sm:flex-row gap-3.5 pt-2">
               <Link
+                id="hero-browse-cta"
                 to="/collection"
-                className="bg-maroon hover:bg-[#6c0217] text-white py-3.5 px-6 rounded-lg text-xs font-bold uppercase tracking-wider text-center shadow-lg hover:shadow-maroon/20 transition-all"
+                className="bg-maroon hover:bg-[#6c0217] text-white py-4 px-8 rounded-xl text-xs font-bold uppercase tracking-widest text-center shadow-lg shadow-maroon/20 hover:shadow-maroon/30 transition-all duration-300 transform hover:-translate-y-0.5"
               >
-                Browse Collection
+                Explore Virtual Catalog
               </Link>
               <button
+                id="hero-whatsapp-cta"
                 onClick={handleWhatsAppOrder}
-                className="border border-[#D4AF37]/50 hover:border-maroon bg-white hover:bg-neutral-50 text-neutral-800 font-bold text-xs uppercase tracking-wider py-3.5 px-6 rounded-lg transition-all flex items-center justify-center gap-2"
+                className="border-2 border-emerald-500/30 hover:border-emerald-500 bg-white hover:bg-emerald-50/40 text-neutral-800 font-bold text-xs uppercase tracking-widest py-4 px-8 rounded-xl transition-all duration-300 flex items-center justify-center gap-2.5 shadow-xs"
               >
                 <MessageSquare className="w-4 h-4 fill-emerald-600 text-emerald-600" />
                 <span>Order on WhatsApp</span>
@@ -113,29 +213,93 @@ export default function Home({ products, onQuickView, onToggleWishlist, wishlist
             </div>
           </div>
 
-          {/* Hero Right Banner Image Mockup Area */}
-          <div className="lg:col-span-5 relative">
-            <div className="absolute inset-0 bg-[#D4AF37]/5 rounded-3xl -rotate-2 -translate-x-3 scale-98" />
-            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-neutral-950/40 to-transparent rounded-2xl z-10" />
+          {/* New Interactive Jharokha Window Image Frame */}
+          <div className="lg:col-span-5 relative flex flex-col items-center">
             
-            {/* Main Visual Image matching requested design mockup */}
-            <div className="relative rounded-2xl overflow-hidden aspect-[4/5] border border-[#D4AF37]/20 shadow-2xl bg-neutral-200">
+            {/* Background frame circles */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-gold/10 blur-2xl -z-1" />
+            
+            {/* Jharokha Shape Cutting Edge Picture Frame Box */}
+            <div
+              id="hero-jharokha-frame"
+              className="relative w-full max-w-[340px] aspect-[4/5.5] border-[3px] border-[#D4AF37]/60 rounded-t-[140px] rounded-b-2xl overflow-hidden shadow-2xl bg-neutral-900 group"
+              style={{
+                boxShadow: "0 25px 50px -12px rgba(128, 0, 32, 0.25)"
+              }}
+            >
+              {/* Overlay with subtle gold glint */}
+              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/85 via-black/15 to-transparent z-10" />
+
+              {/* Transitioning image */}
               <img
-                src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&q=80&w=800"
-                alt="Beautiful Indian Wedding Bridal Dress Lehenga Wear"
-                className="w-full h-full object-cover"
+                src={heroOutfits[activeHeroIdx].image}
+                alt={heroOutfits[activeHeroIdx].name}
+                className="w-full h-full object-cover transform scale-102 group-hover:scale-106 transition-transform duration-700"
                 referrerPolicy="no-referrer"
               />
-              <div className="absolute bottom-5 left-5 right-5 z-20 text-white text-left">
-                <span className="text-[9px] uppercase tracking-widest font-bold text-gold">Exclusive Showcase</span>
-                <h3 className="font-display font-medium text-lg md:text-xl text-amber-50">Crimson Royal Bridal</h3>
-                <p className="text-[10px] text-neutral-300">Available from ₹1999/day including pre-alterations</p>
+
+              {/* Traditional Arch Frame Border Overlay */}
+              <div className="absolute inset-[6px] border border-[#D4AF37]/35 rounded-t-[133px] rounded-b-xl pointer-events-none z-10" />
+
+              {/* Quick Spec Tags */}
+              <div className="absolute top-6 left-6 right-6 z-20 flex justify-between items-center">
+                <span className="bg-maroon/90 text-amber-50 backdrop-blur-xs text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest border border-gold/30 shadow-xs">
+                  {heroOutfits[activeHeroIdx].category}
+                </span>
+                <span className="bg-emerald-600/90 text-white backdrop-blur-xs text-[10px] font-bold px-2.5 py-1 rounded-md">
+                  Rent: {heroOutfits[activeHeroIdx].price}
+                </span>
+              </div>
+
+              {/* Dynamic bottom detail overlays */}
+              <div className="absolute bottom-6 left-6 right-6 z-20 text-white text-left space-y-1.5">
+                <span className="text-[9px] uppercase tracking-widest font-extrabold text-[#D4AF37] block">🎯 Trending Selection</span>
+                <h3 className="font-display font-bold text-base md:text-lg text-amber-55 line-clamp-1">
+                  {heroOutfits[activeHeroIdx].name}
+                </h3>
+                <p className="text-[10px] text-neutral-300 leading-normal line-clamp-2 italic">
+                  &ldquo;{heroOutfits[activeHeroIdx].accent}&rdquo;
+                </p>
               </div>
             </div>
 
-            {/* Decorative Overlay Gold Leaf Frame */}
-            <div className="absolute -top-4 -right-4 w-12 h-12 border-t-2 border-r-2 border-[#D4AF37] pointer-events-none" />
-            <div className="absolute -bottom-4 -left-4 w-12 h-12 border-b-2 border-l-2 border-[#D4AF37] pointer-events-none" />
+            {/* Custom Interactive Thumbnail Navigation bar under Jharokha window */}
+            <div id="hero-slider-nav" className="flex items-center flex-wrap justify-center gap-2 md:gap-3 mt-5 bg-white px-3 md:px-4 py-2 md:py-2.5 rounded-2xl md:rounded-full border border-neutral-200/80 shadow-sm z-10 max-w-full">
+              <span className="text-[9px] font-extrabold text-[#800020] uppercase tracking-wider mr-1 block w-full text-center md:inline md:w-auto">Trending Collection:</span>
+              
+              <div className="flex items-center justify-center gap-1.5 md:gap-2.5 flex-wrap">
+                {heroOutfits.map((outfit, index) => {
+                  const isActive = activeHeroIdx === index;
+                  return (
+                    <button
+                      key={outfit.id + "-" + index}
+                      onClick={() => setActiveHeroIdx(index)}
+                      className={`w-8 h-8 md:w-9 md:h-9 rounded-full overflow-hidden border-2 transition-all duration-300 relative shrink-0 ${
+                        isActive ? "border-maroon scale-110 shadow-md" : "border-neutral-200 opacity-60 hover:opacity-100 hover:scale-105"
+                      }`}
+                      title={outfit.name}
+                    >
+                      <img
+                        src={outfit.image}
+                        alt={outfit.name}
+                        className="w-full h-full object-cover"
+                        referrerPolicy="no-referrer"
+                      />
+                      {isActive && (
+                        <div className="absolute inset-0 bg-maroon/10 flex items-center justify-center">
+                          <div className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            
+            <p className="text-[10px] text-neutral-400 font-medium mt-2">
+              💡 Tap preview circles above to browse the spotlight designer line!
+            </p>
+
           </div>
 
         </div>

@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { Phone, Mail, MapPin, Clock, MessageSquare, Instagram, Send, Star, HelpCircle } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, MessageSquare, Instagram, Send, Star, HelpCircle, Map, Maximize, Minimize, ZoomIn, ZoomOut, Check } from "lucide-react";
 import { CONFIG } from "../config";
 import JharokhaLogo from "../components/JharokhaLogo";
 
 export default function Contact() {
+  const [mapHeight, setMapHeight] = useState<number>(340); // User adjustable height
+  const [mapZoom, setMapZoom] = useState<number>(16); // User adjustable zoom
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -159,27 +161,112 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* BEAUTIFULLY STYLED GOOGLE MAPS PLACEHOLDER */}
-          <div className="bg-neutral-100 rounded-2xl overflow-hidden aspect-[4/3] border border-[#D4AF37]/20 relative shadow-md">
-            {/* Visual Vector Grid Mimicking Map Layout */}
-            <div className="absolute inset-0 bg-neutral-200 opacity-20" style={{ backgroundImage: "linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
-            
-            <div className="absolute inset-0 bg-[#D4AF37]/5 flex flex-col items-center justify-center p-6 text-center space-y-3 z-10">
-              <div className="w-10 h-10 rounded-full bg-maroon/15 text-maroon flex items-center justify-center shadow-md animate-bounce">
-                <MapPin className="w-5 h-5 fill-current" />
-              </div>
-              <div className="space-y-1">
-                <h4 className="font-display font-semibold text-neutral-800 text-xs sm:text-sm">Karond, Bhopal, MP</h4>
-                <p className="text-[10px] text-neutral-500 max-w-xs mx-auto">Pachori Complex, Krishna Nagar Colony, Peepal Chouraha, Karond, Bhopal, MP 462038</p>
+          {/* INTERACTIVE LIVE GOOGLE MAP WITH RESIZING CONTROLS */}
+          <div className="bg-white rounded-2xl border border-[#D4AF37]/25 p-4.5 shadow-md space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2 border-b border-neutral-100">
+              <div className="flex items-center gap-2">
+                <Map className="w-4 h-4 text-maroon" />
+                <span className="font-display font-bold text-xs uppercase text-neutral-800 tracking-wider">Live Boutique Location Map</span>
               </div>
               
+              {/* Map Size and Zoom Interactive Controllers */}
+              <div className="flex flex-wrap items-center gap-2.5">
+                {/* Size Heights presets */}
+                <span className="text-[10px] text-neutral-400 font-bold uppercase">Size:</span>
+                <div className="flex bg-neutral-100 p-0.5 rounded-lg border">
+                  <button
+                    type="button"
+                    onClick={() => setMapHeight(240)}
+                    className={`text-[9px] font-bold px-2 py-1 rounded transition ${mapHeight === 240 ? "bg-maroon text-white shadow-xs" : "text-neutral-500 hover:text-neutral-800"}`}
+                  >
+                    S
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMapHeight(340)}
+                    className={`text-[9px] font-bold px-2 py-1 rounded transition ${mapHeight === 340 ? "bg-maroon text-white shadow-xs" : "text-neutral-500 hover:text-neutral-800"}`}
+                  >
+                    M
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMapHeight(460)}
+                    className={`text-[9px] font-bold px-2 py-1 rounded transition ${mapHeight === 460 ? "bg-maroon text-white shadow-xs" : "text-neutral-500 hover:text-neutral-800"}`}
+                  >
+                    L
+                  </button>
+                </div>
+
+                {/* Micro zoom controller buttons */}
+                <span className="text-[10px] text-neutral-400 font-bold uppercase ml-1">Zoom:</span>
+                <div className="flex items-center bg-neutral-100 rounded-lg border p-0.5">
+                  <button
+                    type="button"
+                    onClick={() => setMapZoom(Math.max(12, mapZoom - 1))}
+                    className="p-1 text-neutral-600 hover:text-neutral-900 transition"
+                    title="Zoom Out"
+                  >
+                    <ZoomOut className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="text-[9px] font-mono px-1 font-bold text-neutral-700 min-w-[14px] text-center">{mapZoom}x</span>
+                  <button
+                    type="button"
+                    onClick={() => setMapZoom(Math.min(20, mapZoom + 1))}
+                    className="p-1 text-neutral-600 hover:text-neutral-900 transition"
+                    title="Zoom In"
+                  >
+                    <ZoomIn className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Slider Height manual control */}
+            <div className="flex items-center gap-3 bg-neutral-50/80 px-2.5 py-1.5 rounded-lg border border-dashed text-[10px]">
+              <span className="text-neutral-500 shrink-0 font-medium">Drag to resize height:</span>
+              <input
+                type="range"
+                min="180"
+                max="550"
+                value={mapHeight}
+                onChange={(e) => setMapHeight(Number(e.target.value))}
+                className="flex-1 accent-maroon cursor-pointer h-1 bg-neutral-200 rounded-lg appearance-none"
+              />
+              <span className="font-mono font-bold text-neutral-700 whitespace-nowrap shrink-0">{mapHeight}px</span>
+            </div>
+
+            {/* Actual Google Map Iframe Container */}
+            <div
+              className="relative rounded-xl overflow-hidden border border-neutral-200 shadow-inner bg-neutral-100 transition-all duration-300"
+              style={{ height: `${mapHeight}px` }}
+            >
+              <iframe
+                title="Jharokha Boutique Location Map"
+                src={`https://maps.google.com/maps?q=${encodeURIComponent("Pachori Complex, Krishna Nagar Colony, Peepal Chouraha, Karond, Bhopal, Madhya Pradesh 462038")}&t=&z=${mapZoom}&ie=UTF8&iwloc=&output=embed`}
+                className="w-full h-full border-0"
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+
+            {/* Compact address badge bar */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-neutral-50 p-2.5 rounded-xl border">
+              <div className="flex items-start gap-2 text-[10px] text-neutral-500 leading-normal">
+                <MapPin className="w-4 h-4 text-maroon shrink-0 mt-0.5" />
+                <span>
+                  <strong>Peepal Chouraha, Karond, Bhopal</strong>
+                  <br />
+                  Pachori Complex, MP 462038
+                </span>
+              </div>
               <a
                 href={`https://maps.google.com/?q=${encodeURIComponent(CONFIG.contact.address)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-maroon hover:bg-[#6c0217] text-white text-[10px] font-bold uppercase tracking-wider py-1.5 px-4 rounded-md shadow-xs transition"
+                className="w-full sm:w-auto bg-maroon hover:bg-[#6c0217] text-white text-[9px] font-bold uppercase tracking-widest py-1.5 px-3 rounded-lg shadow-xs text-center transition"
               >
-                Open Google Maps
+                Get Directions
               </a>
             </div>
           </div>
