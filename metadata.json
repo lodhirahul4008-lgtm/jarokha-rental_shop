@@ -1,0 +1,6 @@
+{
+  "name": "Jharokha Ethnic Wear",
+  "description": "Where tradition meets elegance. Premium bridal, wedding, partywear, and ethnic dress rental store in Karond, Bhopal by Amit & Saloni.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
