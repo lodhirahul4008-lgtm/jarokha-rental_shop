@@ -92,7 +92,7 @@ export default function Contact() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
         
-        {/* LEFT COLUMN: STUDIO COORDINATES (COLS: 5) */}
+        {/* LEFT COLUMN: STUDIO COORDINATES & BRAND SEAL (COLS: 5) */}
         <div className="lg:col-span-5 space-y-6">
           <div className="bg-white rounded-2xl border border-gold/15 p-6 shadow-xs space-y-5">
             <h3 className="font-display font-semibold text-lg text-neutral-800 border-b border-neutral-100 pb-3">
@@ -152,128 +152,18 @@ export default function Contact() {
           {/* Beautiful Jharokha Brand Shield Seal of Quality */}
           <div className="bg-neutral-950 rounded-2xl border border-[#D4AF37]/35 p-6 shadow-md text-center flex flex-col items-center justify-center space-y-4 overflow-hidden relative">
             <div className="absolute inset-0 bg-silk-pattern opacity-5 pointer-events-none" />
-            <JharokhaLogo variant="full" size={240} className="hover:scale-105 transition duration-500 relative z-10" />
+            <JharokhaLogo variant="full" size={200} className="hover:scale-105 transition duration-500 relative z-10" />
             <div className="space-y-1 relative z-10">
-              <h4 className="font-display font-semibold text-gold text-sm">Authentic Jharokha Seal</h4>
+              <h4 className="font-display font-semibold text-gold text-xs">Authentic Jharokha Seal</h4>
               <p className="text-[10px] text-neutral-400 max-w-xs mx-auto leading-relaxed">
                 Registered designs curated personally under stylist advisory by Amit & Saloni, Karond, Bhopal. All Rights Reserved.
               </p>
             </div>
           </div>
-
-          {/* INTERACTIVE LIVE GOOGLE MAP WITH RESIZING CONTROLS */}
-          <div className="bg-white rounded-2xl border border-[#D4AF37]/25 p-4.5 shadow-md space-y-3">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2 border-b border-neutral-100">
-              <div className="flex items-center gap-2">
-                <Map className="w-4 h-4 text-maroon" />
-                <span className="font-display font-bold text-xs uppercase text-neutral-800 tracking-wider">Live Boutique Location Map</span>
-              </div>
-              
-              {/* Map Size and Zoom Interactive Controllers */}
-              <div className="flex flex-wrap items-center gap-2.5">
-                {/* Size Heights presets */}
-                <span className="text-[10px] text-neutral-400 font-bold uppercase">Size:</span>
-                <div className="flex bg-neutral-100 p-0.5 rounded-lg border">
-                  <button
-                    type="button"
-                    onClick={() => setMapHeight(240)}
-                    className={`text-[9px] font-bold px-2 py-1 rounded transition ${mapHeight === 240 ? "bg-maroon text-white shadow-xs" : "text-neutral-500 hover:text-neutral-800"}`}
-                  >
-                    S
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setMapHeight(340)}
-                    className={`text-[9px] font-bold px-2 py-1 rounded transition ${mapHeight === 340 ? "bg-maroon text-white shadow-xs" : "text-neutral-500 hover:text-neutral-800"}`}
-                  >
-                    M
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setMapHeight(460)}
-                    className={`text-[9px] font-bold px-2 py-1 rounded transition ${mapHeight === 460 ? "bg-maroon text-white shadow-xs" : "text-neutral-500 hover:text-neutral-800"}`}
-                  >
-                    L
-                  </button>
-                </div>
-
-                {/* Micro zoom controller buttons */}
-                <span className="text-[10px] text-neutral-400 font-bold uppercase ml-1">Zoom:</span>
-                <div className="flex items-center bg-neutral-100 rounded-lg border p-0.5">
-                  <button
-                    type="button"
-                    onClick={() => setMapZoom(Math.max(12, mapZoom - 1))}
-                    className="p-1 text-neutral-600 hover:text-neutral-900 transition"
-                    title="Zoom Out"
-                  >
-                    <ZoomOut className="w-3.5 h-3.5" />
-                  </button>
-                  <span className="text-[9px] font-mono px-1 font-bold text-neutral-700 min-w-[14px] text-center">{mapZoom}x</span>
-                  <button
-                    type="button"
-                    onClick={() => setMapZoom(Math.min(20, mapZoom + 1))}
-                    className="p-1 text-neutral-600 hover:text-neutral-900 transition"
-                    title="Zoom In"
-                  >
-                    <ZoomIn className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Slider Height manual control */}
-            <div className="flex items-center gap-3 bg-neutral-50/80 px-2.5 py-1.5 rounded-lg border border-dashed text-[10px]">
-              <span className="text-neutral-500 shrink-0 font-medium">Drag to resize height:</span>
-              <input
-                type="range"
-                min="180"
-                max="550"
-                value={mapHeight}
-                onChange={(e) => setMapHeight(Number(e.target.value))}
-                className="flex-1 accent-maroon cursor-pointer h-1 bg-neutral-200 rounded-lg appearance-none"
-              />
-              <span className="font-mono font-bold text-neutral-700 whitespace-nowrap shrink-0">{mapHeight}px</span>
-            </div>
-
-            {/* Actual Google Map Iframe Container */}
-            <div
-              className="relative rounded-xl overflow-hidden border border-neutral-200 shadow-inner bg-neutral-100 transition-all duration-300"
-              style={{ height: `${mapHeight}px` }}
-            >
-              <iframe
-                title="Jharokha Boutique Location Map"
-                src={`https://maps.google.com/maps?q=${encodeURIComponent("Pachori Complex, Krishna Nagar Colony, Peepal Chouraha, Karond, Bhopal, Madhya Pradesh 462038")}&t=&z=${mapZoom}&ie=UTF8&iwloc=&output=embed`}
-                className="w-full h-full border-0"
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
-
-            {/* Compact address badge bar */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-neutral-50 p-2.5 rounded-xl border">
-              <div className="flex items-start gap-2 text-[10px] text-neutral-500 leading-normal">
-                <MapPin className="w-4 h-4 text-maroon shrink-0 mt-0.5" />
-                <span>
-                  <strong>Peepal Chouraha, Karond, Bhopal</strong>
-                  <br />
-                  Pachori Complex, MP 462038
-                </span>
-              </div>
-              <a
-                href={`https://maps.google.com/?q=${encodeURIComponent(CONFIG.contact.address)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto bg-maroon hover:bg-[#6c0217] text-white text-[9px] font-bold uppercase tracking-widest py-1.5 px-3 rounded-lg shadow-xs text-center transition"
-              >
-                Get Directions
-              </a>
-            </div>
-          </div>
         </div>
 
         {/* RIGHT COLUMN: EMAILJS APPOINTMENT INTAKE (COLS: 7) */}
-        <div className="lg:col-span-7 bg-[#FAF7F2] rounded-2xl border border-[#D4AF37]/25 p-6 md:p-8 shadow-md">
+        <div className="lg:col-span-7 bg-white rounded-2xl border border-[#D4AF37]/25 p-6 md:p-8 shadow-md">
           <h3 className="font-display font-semibold text-neutral-800 border-b border-gold/15 pb-3 text-lg">
             Schedule Sizing Trial or Send Message
           </h3>
@@ -362,6 +252,138 @@ export default function Contact() {
           </form>
         </div>
 
+      </div>
+
+      {/* FULL-WIDTH PREMIUM SECTION: INTERACTIVE ROADMAP & BOUTIQUE LOCATION */}
+      <div className="mt-12 bg-white rounded-2xl border border-[#D4AF37]/25 p-5 md:p-8 shadow-md space-y-5">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-neutral-100">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="p-1.5 bg-maroon/5 border border-maroon/20 rounded-lg text-maroon">
+                <Map className="w-4 h-4 animate-bounce" />
+              </span>
+              <h3 className="font-display font-bold text-base uppercase text-neutral-800 tracking-wider">Locate Jharokha Boutique on Map</h3>
+            </div>
+            <p className="text-xs text-neutral-500">
+              Find our physical trial studio in Karond, Bhopal. Adjust the size & zoom sliders below to view customized land routes.
+            </p>
+          </div>
+
+          {/* Interactive Map Layout & Zoom Adjusters */}
+          <div className="flex flex-wrap items-center gap-4 bg-neutral-50 p-2 rounded-xl border border-neutral-100 self-start md:self-auto">
+            {/* Height Sizing presets */}
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] text-neutral-400 font-bold uppercase">Map Size:</span>
+              <div className="flex bg-neutral-200/60 p-0.5 rounded-lg border">
+                <button
+                  type="button"
+                  onClick={() => setMapHeight(240)}
+                  className={`text-[9px] font-bold px-2 py-1 rounded-md transition ${mapHeight === 240 ? "bg-maroon text-white shadow-xs" : "text-neutral-500 hover:text-neutral-850"}`}
+                >
+                  S
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMapHeight(360)}
+                  className={`text-[9px] font-bold px-2 py-1 rounded-md transition ${mapHeight === 360 ? "bg-maroon text-white shadow-xs" : "text-neutral-500 hover:text-neutral-850"}`}
+                >
+                  M
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMapHeight(480)}
+                  className={`text-[9px] font-bold px-2 py-1 rounded-md transition ${mapHeight === 480 ? "bg-maroon text-white shadow-xs" : "text-neutral-500 hover:text-neutral-850"}`}
+                >
+                  L
+                </button>
+              </div>
+            </div>
+
+            {/* Micro Zoom Control Buttons */}
+            <div className="flex items-center gap-1.5 border-l border-neutral-200 pl-3">
+              <span className="text-[10px] text-neutral-400 font-bold uppercase">Zoom:</span>
+              <div className="flex items-center bg-neutral-200/60 rounded-lg border p-0.5">
+                <button
+                  type="button"
+                  onClick={() => setMapZoom(Math.max(12, mapZoom - 1))}
+                  className="p-1 text-neutral-600 hover:text-neutral-900 transition"
+                  title="Zoom Out"
+                >
+                  <ZoomOut className="w-3.5 h-3.5" />
+                </button>
+                <span className="text-[9px] font-mono px-1.5 font-bold text-neutral-700 min-w-[14px] text-center">{mapZoom}x</span>
+                <button
+                  type="button"
+                  onClick={() => setMapZoom(Math.min(20, mapZoom + 1))}
+                  className="p-1 text-neutral-600 hover:text-neutral-900 transition"
+                  title="Zoom In"
+                >
+                  <ZoomIn className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Height adjustment fine-tuning trackbar */}
+        <div className="flex items-center gap-3 bg-[#FAF7F2] px-3.5 py-2 rounded-xl border border-[#D4AF37]/25 text-[10px]">
+          <span className="text-neutral-600 font-bold">Resize map height to fit screen:</span>
+          <input
+            type="range"
+            min="180"
+            max="600"
+            value={mapHeight}
+            onChange={(e) => setMapHeight(Number(e.target.value))}
+            className="flex-1 accent-maroon cursor-pointer h-1 bg-neutral-200 rounded-lg appearance-none"
+          />
+          <span className="font-mono font-bold bg-[#800020] text-white px-2 py-0.5 rounded-md min-w-[45px] text-center">{mapHeight}px</span>
+        </div>
+
+        {/* Embedded Iframe Map element styled professionally */}
+        <div
+          className="relative rounded-2xl overflow-hidden border border-[#D4AF37]/20 shadow-md bg-neutral-50 transition-all duration-300"
+          style={{ height: `${mapHeight}px` }}
+        >
+          {/* Custom watermark layer loaded on map edge */}
+          <div className="absolute top-4 left-4 z-10 bg-neutral-900/90 text-[#D4AF37] backdrop-blur-xs text-[10px] font-bold px-3 py-1.5 rounded-lg border border-gold/45 shadow-sm uppercase tracking-widest flex items-center gap-1.5 animate-pulse">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span>Salon Showroom Live</span>
+          </div>
+
+          <iframe
+            title="Jharokha Boutique Location Map"
+            src={`https://maps.google.com/maps?q=${encodeURIComponent("Pachori Complex, Krishna Nagar Colony, Peepal Chouraha, Karond, Bhopal, Madhya Pradesh 462038")}&t=&z=${mapZoom}&ie=UTF8&iwloc=&output=embed`}
+            className="w-full h-full border-0 absolute inset-0"
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+        </div>
+
+        {/* Address Banner + Directions Trigger */}
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-neutral-50 p-4 rounded-xl border">
+          <div className="flex items-start gap-3">
+            <div className="w-9 h-9 rounded-full bg-maroon/10 text-maroon flex items-center justify-center shrink-0 mt-0.5">
+              <MapPin className="w-4.5 h-4.5 fill-current" />
+            </div>
+            <div className="text-xs">
+              <h5 className="font-bold text-neutral-800 leading-none mb-1">Peepal Chouraha, Karond Boutique Center</h5>
+              <p className="text-neutral-500 leading-relaxed max-w-xl">
+                Located conveniently at Pachori Complex, Krishna Nagar Colony near Peepal Chouraha, Karond, Bhopal, MP - 462038
+              </p>
+            </div>
+          </div>
+          
+          <a
+            href={`https://maps.google.com/?q=${encodeURIComponent("Pachori Complex, Krishna Nagar Colony, Peepal Chouraha, Karond, Bhopal, Madhya Pradesh 462038")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-maroon hover:bg-[#6c0217] text-white text-[10px] font-bold uppercase tracking-widest py-3 px-6 rounded-xl shadow-lg shadow-maroon/10 hover:shadow-maroon/20 hover:-translate-y-0.5 transform transition text-center flex items-center justify-center gap-2"
+          >
+            <Send className="w-3.5 h-3.5" />
+            <span>Open Directions on Mobile App</span>
+          </a>
+        </div>
       </div>
 
     </div>
