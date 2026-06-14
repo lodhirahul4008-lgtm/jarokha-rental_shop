@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { MessageSquare, Calendar, ChevronRight, Phone, Send, MapPin, Watch, ClipboardList } from "lucide-react";
+import { MessageSquare, Calendar, ChevronRight, Phone, Send, MapPin, Watch, ClipboardList, Check, Copy, AlertTriangle, ShoppingBag } from "lucide-react";
 import { Product, BookingRecord } from "../data/products";
 import { CONFIG, getEmailJSConfig } from "../config";
 
@@ -37,6 +37,9 @@ export default function BookingForm({
     message: "",
   });
 
+  const [isBookedCompleted, setIsBookedCompleted] = useState(false);
+  const [copiedText, setCopiedText] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     if (type === "checkbox") {
@@ -49,26 +52,53 @@ export default function BookingForm({
 
   const getWhatsAppBookingText = () => {
     if (!selectedProduct) return "";
-    return `Hi Jharokha Ethnic Wear, I want to submit a rental booking request:\n\n` +
-           `*--- CUSTOMER DETAILS ---*\n` +
-           `*Name:* ${formData.fullName}\n` +
-           `*Mobile:* ${formData.mobile}\n` +
-           `*WhatsApp:* ${formData.whatsapp}\n` +
-           `*Delivery Option:* ${formData.pickupOption === "delivery" ? "Home Delivery" : "Self Store Pickup"}\n` +
-           `*Address:* ${formData.address || "N/A"}\n\n` +
-           `*--- OUTFIT DETAILS ---*\n` +
-           `*Outfit:* ${selectedProduct.name}\n` +
-           `*Price:* ${CONFIG.currencySymbol}${selectedProduct.price}\n` +
-           `*Size:* ${selectedSize || "Default"}\n` +
-           `*Event Date:* ${selectedDate || "Not Specified"}\n` +
-           `*Duration:* ${selectedDuration} Days\n` +
-           `*Message:* ${formData.message || "None"}`;
+    const deliveryFee = formData.pickupOption === "delivery" ? 150 : 0;
+    const finalBillTotal = Number(selectedProduct.price) + deliveryFee;
+
+    return `✨ *NEW RENTAL BOOKING REQUEST - JHAROKHA* ✨\n\n` +
+           `👋 *Hello Jharokha Support Support team,* I have just requested a rental booking from your interactive catalog! Here is my detailed summary:\n\n` +
+           `👤 *CUSTOMER PROFILE*\n` +
+           `• *Full Name:* ${formData.fullName}\n` +
+           `• *Contact Mobile:* ${formData.mobile}\n` +
+           `• *WhatsApp:* ${formData.whatsapp || formData.mobile}\n` +
+           `• *Email:* ${formData.email || "not_provided@gmail.com"}\n\n` +
+           `👗 *ETHNIC OUTFIT SELECTION*\n` +
+           `• *Design Name:* ${selectedProduct.name}\n` +
+           `• *Category:* ${selectedProduct.category}\n` +
+           `• *Fitted Dress Size:* *${selectedSize || "M"}*\n\n` +
+           `🗓️ *RENTAL TIMELINE & PERIOD*\n` +
+           `• *Booking Date:* ${selectedDate || "Not Specified"}\n` +
+           `• *Duration Period:* ${selectedDuration} Days\n\n` +
+           `🚚 *DELIVERY & ADDRESS PREFERENCE*\n` +
+           `• *Type:* ${formData.pickupOption === "delivery" ? "🏡 Premium Home Delivery" : "🏪 Boutique Hand Pickup"}\n` +
+           `• *Shipping Address:* ${formData.address || "Bhopal Boutique Local Pickup requested (Peepal Chouraha, Karond, Bhopal)"}\n\n` +
+           `💰 *RENTAL PAYMENT BREAKDOWN*\n` +
+           `• *Base Rental fee:* ₹${selectedProduct.price}\n` +
+           `• *Refundable Security Deposit:* ₹${selectedProduct.deposit}\n` +
+           `• *Local Courier Charge:* ₹${deliveryFee}\n` +
+           `• *Estimated Bill Total:* *₹${finalBillTotal}* (+ Refundable Deposit)\n\n` +
+           `✏️ *SPECIAL ALTERATION / FIT NOTES*\n` +
+           `• "${formData.message || "No specific adjustments requested."}"\n\n` +
+           `🤝 _I agree to the Jharokha Rental Terms & returning in clean hygiene condition._\n\n` +
+           `Please verify the boutique availability and lock my rental slots. Thank you!`;
   };
 
   const handleWhatsAppRedirect = () => {
     const text = getWhatsAppBookingText();
     if (!text) return;
     window.open(`https://wa.me/${CONFIG.whatsappNumber.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(text)}`, "_blank");
+  };
+
+  const handleCopyText = async () => {
+    const text = getWhatsAppBookingText();
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedText(true);
+      setTimeout(() => setCopiedText(false), 2000);
+    } catch (e) {
+      console.error("Failed to copy", e);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -134,17 +164,20 @@ export default function BookingForm({
 
     try {
       if (isPlaceholderKey) {
-        // Handle gracefully: alert the owner that they have placeholder keys set
         console.warn("EmailJS key is a placeholder. Booking is saved locally and WhatsApp integration is ready.");
         setSubmitStatus({
           type: "success",
-          message: "Aura Booking Recorded! Since default EmailJS keys are placeholders, please configure your real EmailJS account keys in the 'Store Manager' (Admin Panel) to receive direct email mailouts.",
+          message: "Booking Recorded! Please click the button below to send this pre-filled summary on WhatsApp to support.",
         });
         onSuccess();
-        setTimeout(() => {
-          handleWhatsAppRedirect();
-        }, 3000);
+        setIsBookedCompleted(true);
         setIsSubmitting(false);
+        // Fallback popup attempt
+        try {
+          handleWhatsAppRedirect();
+        } catch (e) {
+          console.log("Auto WhatsApp redirect prevented by browser popup blocker.", e);
+        }
         return;
       }
 
@@ -165,40 +198,163 @@ export default function BookingForm({
       if (response.ok) {
         setSubmitStatus({
           type: "success",
-          message: "Congratulations! Booking request was dispatch-emailed. Our design advisor Saloni will confirm size tailoring over WhatsApp shortly.",
+          message: "Congratulations! Booking request was dispatch-emailed. Please dispatch the summary message on WhatsApp as well.",
         });
         onSuccess();
-        
-        // Auto double-prompt with WhatsApp integration
-        setTimeout(() => {
+        setIsBookedCompleted(true);
+        try {
           handleWhatsAppRedirect();
-        }, 1500);
+        } catch (e) {}
       } else {
         const errorText = await response.text();
         console.error("EmailJS Service rejected submission:", errorText);
         setSubmitStatus({
           type: "success",
-          message: "Booking request saved to Store Manager database! (Email key error: " + errorText + "). Please configure verified EmailJS keys in the Store Manager so alerts deliver properly.",
+          message: "Booking saved locally. Email delivery error: " + errorText + ". Please dispatch WhatsApp summary.",
         });
         onSuccess();
-        setTimeout(() => {
+        setIsBookedCompleted(true);
+        try {
           handleWhatsAppRedirect();
-        }, 3000);
+        } catch (e) {}
       }
     } catch (err) {
       console.error("Booking transmission error:", err);
       setSubmitStatus({
         type: "success",
-        message: "Details recorded in the Store Manager! Let's finalize your tailored size over WhatsApp instantly.",
+        message: "Details recorded in the database! Ready to send on WhatsApp.",
       });
       onSuccess();
-      setTimeout(() => {
+      setIsBookedCompleted(true);
+      try {
         handleWhatsAppRedirect();
-      }, 2000);
+      } catch (e) {}
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  if (isBookedCompleted && selectedProduct) {
+    const deliveryFee = formData.pickupOption === "delivery" ? 150 : 0;
+    const finalBillTotal = Number(selectedProduct.price) + deliveryFee;
+    
+    return (
+      <div className="bg-white rounded-2xl shadow-xl border border-emerald-500/35 p-6 md:p-8 relative overflow-hidden text-left space-y-6">
+        {/* Visual Silk Gold & Emerald Accent Top Banner */}
+        <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-emerald-500 via-gold to-emerald-500" />
+
+        <div className="text-center space-y-2 py-2">
+          <div className="w-14 h-14 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto shadow-sm">
+            <Check className="w-7 h-7" />
+          </div>
+          <h3 className="font-display font-extrabold text-[#800020] text-xl md:text-2xl tracking-tight">
+            Checkout Saved Successfully!
+          </h3>
+          <p className="text-neutral-500 text-xs max-w-sm mx-auto leading-relaxed">
+            Your booking request has been logged in Jharokha's secure database. Let's finish locking your dates on WhatsApp.
+          </p>
+        </div>
+
+        {/* Informative Alert for EmailJS Sandbox */}
+        <div className="bg-amber-50/75 border border-[#D4AF37]/25 rounded-xl p-4 text-xs text-neutral-700 leading-relaxed flex gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <h4 className="font-bold text-[#800020] uppercase text-[10px] tracking-wide">📧 Email Confirmation Note</h4>
+            <p className="text-neutral-600 leading-normal">
+              Noticed that you aren't receiving verification emails? Default email credentials run in demo mode. Please configure your active account credentials under <strong>Email Delivery Gateway</strong> in the <strong className="text-neutral-900 border-b border-dashed border-neutral-500">Store Manager</strong> (Admin section) so they route immediately to your inbox!
+            </p>
+          </div>
+        </div>
+
+        {/* Selected Outfit & Details card */}
+        <div className="bg-neutral-50 border rounded-xl p-4 md:p-5 space-y-4">
+          <div className="flex items-start gap-4">
+            <img
+              src={selectedProduct.images[0]}
+              alt={selectedProduct.name}
+              className="w-16 h-20 object-cover rounded-md border border-neutral-200 shrink-0"
+              referrerPolicy="no-referrer"
+            />
+            <div className="flex-1 min-w-0 text-xs text-left">
+              <span className="text-[10px] uppercase font-bold text-gold tracking-widest block">{selectedProduct.category}</span>
+              <h4 className="font-display font-bold text-neutral-800 text-sm truncate">{selectedProduct.name}</h4>
+              <p className="text-neutral-500 mt-0.5">Flipped Tailor Size: <strong className="text-neutral-800 font-mono font-bold bg-neutral-200/60 px-1.5 py-0.5 rounded">{selectedSize || "M"}</strong></p>
+              <p className="text-neutral-500 mt-1 flex items-center gap-1 font-medium text-[11px] text-maroon">
+                <Calendar className="w-3.5 h-3.5 text-gold" style={{ display: 'inline-block' }} />
+                <span>Date locked: {selectedDate || "Not Specified"} ({selectedDuration} Days)</span>
+              </p>
+            </div>
+          </div>
+
+          <div className="border-t border-neutral-200/60 pt-3 grid grid-cols-2 gap-y-2 text-xs text-neutral-600">
+            <div>Customer Name:</div>
+            <div className="font-bold text-neutral-900 text-right">{formData.fullName}</div>
+            <div>Contact Phone:</div>
+            <div className="font-bold font-mono text-neutral-900 text-right">{formData.mobile}</div>
+            <div>Preference:</div>
+            <div className="font-bold text-neutral-900 text-right">{formData.pickupOption === "delivery" ? "🏡 Home Delivery" : "🏪 Store Pickup"}</div>
+            <div className="border-t border-neutral-200/60 pt-2 font-bold text-[#800020] text-[13px]">Total Payable:</div>
+            <div className="border-t border-neutral-200/60 pt-2 font-extrabold text-[#800020] text-[13px] text-right">
+              ₹{finalBillTotal} <span className="text-[10px] text-neutral-400 font-medium font-sans">(+ ₹{selectedProduct.deposit} Refundable Deposit)</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Automated WhatsApp Message Output */}
+        <div className="space-y-2">
+          <div className="flex justify-between items-center text-xs">
+            <span className="font-bold text-neutral-700 uppercase tracking-widest text-[10px]">📟 Pre-filled booking summary</span>
+            <button
+              onClick={handleCopyText}
+              className="text-[#800020] hover:text-maroon font-bold flex items-center gap-1 transition"
+            >
+              {copiedText ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  <span className="text-emerald-600 font-medium text-[11px]">Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3.5 h-3.5" />
+                  <span>Copy text</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          <div className="relative bg-neutral-950 text-neutral-100 p-4 rounded-xl max-h-48 overflow-y-auto font-mono text-[11px] leading-relaxed text-left">
+            <pre className="whitespace-pre-wrap select-all text-neutral-200 font-mono text-xs" style={{ fontFamily: '"Fira Code", "Courier New", monospace' }}>
+              {getWhatsAppBookingText()}
+            </pre>
+          </div>
+          <p className="text-[10px] text-neutral-400">
+            💡 The text shown above is generated with live details. Click below to immediately send it pre-filled to our support team on WhatsApp!
+          </p>
+        </div>
+
+        {/* Main CTA: Action Buttons */}
+        <div className="space-y-3 pt-2">
+          <button
+            onClick={handleWhatsAppRedirect}
+            className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white py-3.5 rounded-xl font-bold text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-2.5 shadow-md shadow-emerald-500/10 hover:shadow-emerald-500/30"
+          >
+            <MessageSquare className="w-5 h-5 fill-current text-white animate-bounce" />
+            Send Pre-filled Summary to WhatsApp Support
+          </button>
+
+          <button
+            onClick={() => {
+              setIsBookedCompleted(false);
+              setSubmitStatus({ type: null, message: "" });
+            }}
+            className="w-full bg-neutral-100 hover:bg-neutral-200 text-neutral-700 py-3 rounded-xl font-semibold text-xs uppercase tracking-wider transition"
+          >
+            ← Browse Catalog / Rent Another Dress
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-2xl shadow-xl border border-[#D4AF37]/25 p-6 md:p-8 relative overflow-hidden text-left">
